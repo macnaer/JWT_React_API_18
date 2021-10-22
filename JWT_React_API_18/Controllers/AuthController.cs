@@ -1,6 +1,7 @@
 ﻿using JWT_React_API_18.Data;
 using JWT_React_API_18.Data.Models;
 using JWT_React_API_18.DTO;
+using JWT_React_API_18.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,10 +16,12 @@ namespace JWT_React_API_18.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly JwtService _jwtService;
 
-        public AuthController(IUserRepository userRepository)
+        public AuthController(IUserRepository userRepository, JwtService jwtService)
         {
             _userRepository = userRepository;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -32,6 +35,31 @@ namespace JWT_React_API_18.Controllers
             };
 
             return Created("User sccessfuly created.", _userRepository.Create(user));
+        }
+
+        [HttpPost("login")]
+        public IActionResult Login(LoginDtos dto)
+        {
+            var user = _userRepository.GetUserByEmail(dto.Email);
+            if (user is null)
+            {
+                return BadRequest("Invalid login or password.");
+            }
+            if(!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
+            {
+                return BadRequest("Invalid login or password.");
+            }
+            var jwt = _jwtService.Generate(user.Id);
+
+            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            {
+                HttpOnly = true
+            });
+
+            return Ok(new
+            {
+                message = "Success"
+            });
         }
     }
 }

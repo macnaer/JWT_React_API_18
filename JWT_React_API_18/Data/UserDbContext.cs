@@ -16,6 +16,6 @@ namespace JWT_React_API_18.Data
             modelBuilder.Entity<User>(entity => { entity.HasIndex(i => i.Email).IsUnique(); });
         }
 
-        DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

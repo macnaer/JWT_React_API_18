@@ -1,4 +1,5 @@
 using JWT_React_API_18.Data;
+using JWT_React_API_18.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,7 @@ namespace JWT_React_API_18
 
             services.AddControllers();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<JwtService>();
             services.AddDbContext<UserDbContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });

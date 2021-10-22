@@ -17,9 +17,14 @@ namespace JWT_React_API_18.Data
 
         public User Create(User user)
         {
-            var createdUser = _context.Add(user);
+            var createdUser = _context.Users.Add(user);
             _context.SaveChanges();
             return createdUser.Entity;
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            return _context.Users.FirstOrDefault(u => u.Email == email);
         }
     }
 }
