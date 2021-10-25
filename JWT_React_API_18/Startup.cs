@@ -3,6 +3,7 @@ using JWT_React_API_18.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,10 @@ namespace JWT_React_API_18
             services.AddDbContext<UserDbContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "client-app/build";
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "JWT_React_API_18", Version = "v1" });
@@ -51,6 +56,7 @@ namespace JWT_React_API_18
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "JWT_React_API_18 v1"));
             }
 
+            app.UseSpaStaticFiles();
             app.UseRouting();
 
             app.UseAuthorization();
@@ -58,6 +64,12 @@ namespace JWT_React_API_18
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "client-app";
+                spa.UseReactDevelopmentServer(npmScript: "start");
             });
         }
     }

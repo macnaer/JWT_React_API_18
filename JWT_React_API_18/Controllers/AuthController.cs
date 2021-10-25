@@ -61,5 +61,34 @@ namespace JWT_React_API_18.Controllers
                 message = "Success"
             });
         }
+
+        [HttpGet("user")]
+        public IActionResult User()
+        {
+            try
+            {
+                var jwt = Request.Cookies["jwt"];
+                var token = _jwtService.Verify(jwt);
+                int userId = int.Parse(token.Issuer);
+                var user = _userRepository.GetUserById(userId);
+                return Ok(user);
+
+            }
+            catch (Exception)
+            {
+
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt");
+            return Ok(new
+            {
+                message = "Success"
+            });
+        }
     }
 }

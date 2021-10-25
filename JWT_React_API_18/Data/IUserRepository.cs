@@ -10,5 +10,6 @@ namespace JWT_React_API_18.Data
     {
         User Create(User user);
         User GetUserByEmail(string email);
+        User GetUserById(int id);
     }
 }

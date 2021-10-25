@@ -26,5 +26,10 @@ namespace JWT_React_API_18.Data
         {
             return _context.Users.FirstOrDefault(u => u.Email == email);
         }
+
+        public User GetUserById(int id)
+        {
+            return _context.Users.FirstOrDefault(u => u.Id == id);
+        }
     }
 }
